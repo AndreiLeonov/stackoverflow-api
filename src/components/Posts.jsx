@@ -35,7 +35,7 @@ export const Posts = React.memo( () => {
                   setData(sorteredData);
             })
             .catch((error) => console.log(error)) //find error at the time of the request
-            .finally(() => setIsLoading(true)); 
+            .finally(() => setIsLoading(false)); 
       },[]);
 
       //this function(handler) sorts by creation date
