@@ -9,37 +9,37 @@ import styles from '../styles/styles.module.css';
 
 export const Posts = React.memo( () => {
 
-    //для прелоадера > сделать красивый прелоадер
+    //this useState for Preloader status (on/off)
     const [isLoading,setIsLoading] = React.useState(true);
-    
-    //Для сохранения постов
+
+    //this useState for Data(Posts) from API
     const [data, setData] = React.useState(null);
 
-    //Для сохранения порядка сортировки
+    //this useState for the sort order
     const [isOrderAsc, setIsOrderAsc] = React.useState(true);
 
-    //Для отображения порядка сортировки в названии кнопки
+    //this useState for button name
     const [isBtnAsc, setIsBtnAsc] = React.useState(true);
 
-    //используем данный хук для асинхронного запроса ч/з аксиос, фильтруем и сортируем ч/з Лодаш и сетаем полученный массив в дата 
+    //this useEffect for asynchronous request, filtering and sorting through Lodash 
     React.useEffect(() => {
           axios
             .get(`https://api.stackexchange.com/2.2/search?intitle=react&site=stackoverflow`)
             .then((res) => {
-                //внутрь filteredData помещяю отфильтрованный по ключам массив
+                //filtering with Lodash
                 const filteredData = _.filter(res.data.items, function(item) {
                     return item.is_answered === true && item.owner.reputation >= 50
                   });
-                  //внутрь sorteredData помещяю отсортированный по дате (по возрастанию) массив
+                  //sorting with with Lodash
                 const sorteredData = _.orderBy(filteredData, ['creation_date'], ['asc'])
                   setData(sorteredData);
             })
-            .catch((error) => console.log(error))
-            .finally(() => setIsLoading(false));
+            .catch((error) => console.log(error)) //find error at the time of the request
+            .finally(() => setIsLoading(true)); 
       },[]);
 
+      //this function(handler) sorts by creation date
       const sortOrderHandler = () => {
-          //делаем копию постов
           const dataCopy = [...data];
           let order = isOrderAsc ? 'desc' : 'asc';
           let OrderedPosts = _.orderBy(dataCopy, ['creation_date'], [order]);
@@ -48,7 +48,6 @@ export const Posts = React.memo( () => {
           setIsBtnAsc(!isBtnAsc);
       };
 
-      console.log(data);
     return (
         <div className={styles.posts}>
             {
@@ -62,7 +61,7 @@ export const Posts = React.memo( () => {
             <></>}
             {
             isLoading ? 
-            <div className={styles.spin}>
+            <div>
               <Spin 
                 tip="Loading...">
               </Spin>
