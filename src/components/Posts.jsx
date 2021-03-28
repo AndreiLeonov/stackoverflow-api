@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { Spin, Button } from 'antd';
 import 'antd/es/spin/style/css';
 import 'antd/es/button/style/css';
-import styles from '../styles/styles.css'
+import styles from '../styles/styles.module.css';
 
 export const Posts = React.memo( () => {
 
@@ -36,7 +36,7 @@ export const Posts = React.memo( () => {
             })
             .catch((error) => console.log(error))
             .finally(() => setIsLoading(false));
-      }, []);
+      },[]);
 
       const sortOrderHandler = () => {
           //делаем копию постов
@@ -46,18 +46,29 @@ export const Posts = React.memo( () => {
           setIsOrderAsc(!isOrderAsc);
           setData(OrderedPosts);
           setIsBtnAsc(!isBtnAsc);
-      }
+      };
 
       console.log(data);
     return (
-        <div className={'PostsContainer'}>
-            {!isLoading ?
-            <Button onClick={sortOrderHandler} type='primary'>ОТСОРТИРОВАТЬ ПО {isBtnAsc ? 'ПО УБЫВАНИЮ' : 'ПО ВОЗРАСТАНИЮ'} </Button>
-        :<></>}
-            {isLoading ? 
-        <Spin className={'spin'} tip="Loading..."></Spin> : 
-        data.map((data, i) => <Post key={i} data={data}/>)
-        }
+        <div className={styles.posts}>
+            {
+            !isLoading ?
+            <div>
+              <Button 
+                onClick={sortOrderHandler} 
+                type='primary'>ОТСОРТИРОВАТЬ ПО {isBtnAsc ? 'УБЫВАНИЮ'  : 'ВОЗРАСТАНИЮ'} 
+              </Button>
+            </div> :
+            <></>}
+            {
+            isLoading ? 
+            <div className={styles.spin}>
+              <Spin 
+                tip="Loading...">
+              </Spin>
+            </div> : 
+            data.map((data, i) => <Post key={i} data={data}/>)
+             }
       </div>
     );
 })
